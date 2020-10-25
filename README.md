@@ -8,7 +8,7 @@ Install the dependencies...
 
 ```bash
 cd svelte-app
-npm install
+yarn
 ```
 
 ...then start [Rollup](https://rollupjs.org):
