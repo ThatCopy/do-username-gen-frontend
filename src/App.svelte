@@ -1,6 +1,15 @@
 <script>
+import { onMount } from "svelte";
 	let promise = getDoUsername();
-	let darkmode = false;
+	let bodyClass = document.body.classList; // Attributes in Class
+	let isDarkMode;
+
+	onMount(() => {
+	    let theme_config = JSON.parse(localStorage.getItem('DarkMode')); // return a Boolean from Local Storage
+		if (theme_config) {
+			setDarkMode()
+		}
+	})
 
 	async function getDoUsername() {
 		const res = await fetch(`https://thatcopy.pw/do/`);
@@ -18,35 +27,9 @@
 	}
 
 	function setDarkMode() {
-		const headings = document.getElementsByTagName("h1");
-		const buttons = document.getElementsByTagName("button");
-		if (!darkmode) {
-			darkmode = true;
-			document.body.style.background = '#2E2C2F';
-			for (let heading of headings) {
-				if (heading.id != "error") heading.style.color = 'white';
-			}
-			for (let button of buttons) {
-    			if (button.id == "darkmode") {
-					button.innerHTML = "Darkmode: On";
-				}
-				button.style.background = '#475B63';
-				button.style.color = 'white';
-			}
-		} else {
-			darkmode = false;
-			document.body.style.background = 'white';
-			for (let heading of headings) {
-				if (heading.id != "error") heading.style.color = 'black';
-			}
-			for (let button of buttons) {
-				if (button.id == "darkmode") {
-					button.innerHTML = "Darkmode: Off";
-				}
-				button.style.background = '#f4f4f4';
-				button.style.color = 'black';
-			}
-		}
+		bodyClass.toggle('dark');
+		isDarkMode = bodyClass.contains("dark");
+		localStorage.setItem('DarkMode', isDarkMode);
 	}
 </script>
 
@@ -64,7 +47,7 @@
 		<h1 id="error" style="color: red">{error.message}</h1>
 	{/await}
 	<button id="darkmode" on:click={setDarkMode}>
-		Darkmode: Off
+		DarkMode: {isDarkMode ? "ON" : "OFF"}
 	</button>
 </div>
 </main>
